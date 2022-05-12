@@ -1,4 +1,4 @@
-import './app.css';
+import './App.css';
 import IcsTable from './IcsTable';
 
 function App() {
