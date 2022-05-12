@@ -13,3 +13,23 @@ input[type="url"] {
   margin-bottom: 20px;
   margin-right: 10px;
 }
+
+.table span {
+  color: green;
+}
+
+.table span.danger {
+  color: red;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-5 {
+  margin-top: 5rem;
+}
+
+.mt-2 {
+  margin-top: 2rem;
+}

@@ -5,7 +5,7 @@ class IcsTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      icsUrl: '',
+      icsUrl: 'https://www.airbnb.com.au/calendar/ical/28640935.ics?s=c128911ca8a35aead86d5aa0806fbe97',
       calendarData: {}
     };
   }
@@ -20,6 +20,29 @@ class IcsTable extends React.Component {
     this.setState({
       icsUrl: event.target.value
     })
+  }
+
+  totalDaysUnder21 = () => {
+    let days = 0;
+    if (this.state.calendarData.events) {
+      this.state.calendarData.events.map((value, index) => {
+        let daysCount = this.diffDateDays(value.dtstart.value, value.dtend.value);
+        if ( daysCount <= 21 ) {
+          days += daysCount;
+        }
+      });
+    }
+
+    return days;
+  }
+
+  remainingBookable = () => {
+    let days = 0;
+    if (this.state.calendarData.events) {
+      days = 180 - this.totalDaysUnder21();
+    }
+
+    return days;
   }
 
   handleSubmit = () => {
@@ -49,7 +72,8 @@ class IcsTable extends React.Component {
               <th>Description</th>
               <th>Date Start</th>
               <th>Date End</th>
-              <th>Total Days</th>
+              <th className='text-center'>Total Days</th>
+              <th className='text-center'>More than 21 days?</th>
               <th>Summary</th>
             </tr>
           </thead>
@@ -57,16 +81,27 @@ class IcsTable extends React.Component {
             {this.state.calendarData.events && this.state.calendarData.events.map((value, index) => {
               return (
                 <tr key={index} >
-                  <td>{value.description.value}</td>
+                  <td>{value.hasOwnProperty('description') ? value.description.value : '-'}</td>
                   <td>{value.dtstart.value.toDateString()}</td>
                   <td>{value.dtend.value.toDateString()}</td>
-                  <td>{this.diffDateDays(value.dtstart.value, value.dtend.value)}</td>
+                  <td className='text-center' >
+                    <span className={this.diffDateDays(value.dtstart.value, value.dtend.value) > 21 ? 'danger' : ''} >{this.diffDateDays(value.dtstart.value, value.dtend.value)}</span>
+                  </td>
+                  <td className='text-center'>{this.diffDateDays(value.dtstart.value, value.dtend.value) > 21 ? 'Yes' : 'No'}</td>
                   <td>{value.summary.value}</td>
                 </tr>
               )
             })}
           </tbody>
         </table>
+
+        <div className='mt-5' >
+          <strong>Total days under 21:</strong> {this.totalDaysUnder21()}
+        </div>
+
+        <div className='mt-2' >
+          <strong>Days remaining bookable under 21 days:</strong> {this.remainingBookable()}
+        </div>
       </div>
     );
   }
